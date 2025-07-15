@@ -1,0 +1,228 @@
+<div class="home-container">
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="./assets/img/logo.png" alt="Logo" class="logo">
+            <h1>Recetas</h1>
+        </div>
+        <div class="profile-container" (click)="toggleProfile()">
+            <img [src]="userProfile.image" alt="Avatar" class="profile-avatar"
+                (error)="userProfile.image = 'assets/img/default-avatar.png'">
+            <span class="profile-name">{{ userProfile.name }}</span>
+        </div>
+    </nav>
+
+    <!-- Perfil de usuario -->
+    <div class="profile-card" *ngIf="showProfile" @fadeInOut>
+        <div class="profile-header">
+            <img [src]="userProfile.image" alt="Avatar" class="profile-large"
+                (error)="userProfile.image = 'assets/img/default-avatar.png'">
+            <h2>{{ userProfile.name }}</h2>
+        </div>
+        <div class="profile-details">
+            <p><strong>Email:</strong> {{ userProfile.email }}</p>
+            <button class="logout-btn" (click)="logout()">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <!-- Loading state -->
+        <div *ngIf="isLoading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Cargando recetas...</p>
+        </div>
+
+        <!-- Contenido cuando no está loading -->
+        <div *ngIf="!isLoading">
+            <div class="search-container">
+                <input type="text" [(ngModel)]="searchTerm" (input)="searchRecipes()" placeholder="Buscar recetas..."
+                    class="search-input">
+                <button (click)="toggleAddForm()" class="add-recipe-btn">
+                    {{ showAddForm ? 'Cancelar' : 'Agregar Receta' }}
+                </button>
+            </div>
+
+            <!-- Formulario para agregar receta -->
+            <!-- Formulario para agregar receta -->
+            <div *ngIf="showAddForm" class="add-recipe-form" @fadeInOut>
+                <h2>Agregar Nueva Receta</h2>
+                <form [formGroup]="recipeForm" (ngSubmit)="addRecipe()">
+                    <div class="form-group">
+                        <label>Nombre de la receta:</label>
+                        <input type="text" formControlName="strMeal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría:</label>
+                        <input type="text" formControlName="strCategory" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Área:</label>
+                        <input type="text" formControlName="strArea" required>
+                    </div>
+                    <div class="form-group">
+                        <label>URL de la imagen:</label>
+                        <input type="text" formControlName="strMealThumb" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Instrucciones:</label>
+                        <textarea formControlName="strInstructions" rows="5" required></textarea>
+                    </div>
+
+                    <!-- Sección de ingredientes dinámicos -->
+                    <div class="ingredients-section">
+                        <h3>Ingredientes</h3>
+                        <div formArrayName="ingredients">
+                            <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i"
+                                class="ingredient-row">
+                                <div class="form-group">
+                                    <label>Ingrediente {{i + 1}}:</label>
+                                    <input type="text" formControlName="name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cantidad:</label>
+                                    <input type="text" formControlName="measure">
+                                </div>
+                                <button type="button" (click)="removeIngredient(i)" class="remove-ingredient-btn"
+                                    *ngIf="i > 0">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" (click)="addIngredient()" class="add-ingredient-btn">
+                            <i class="fas fa-plus"></i> Añadir otro ingrediente
+                        </button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" [disabled]="!recipeForm.valid">Guardar</button>
+                        <button type="button" (click)="toggleAddForm()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal de confirmación de eliminación -->
+            <div *ngIf="recipeToDelete !== null" class="confirmation-modal" @fadeInOut>
+                <div class="modal-content">
+                    <h3>¿Estás seguro de eliminar esta receta?</h3>
+                    <div class="modal-actions">
+                        <button (click)="removeRecipe()" class="confirm-btn">Sí, Eliminar</button>
+                        <button (click)="cancelDelete()" class="cancel-btn">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="filteredRecipes.length === 0" class="no-recipes">
+                <p>No se encontraron recetas. Intenta con otro término de búsqueda.</p>
+            </div>
+
+            <div *ngIf="filteredRecipes.length > 0" class="table-container">
+                <table class="recipes-table">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Área</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Modo edición -->
+                        <tr *ngIf="editingIndex !== null" [formGroup]="recipeForm">
+                            <td><img [src]="recipeForm.value.strMealThumb || 'assets/img/default-recipe.jpg'"
+                                    class="recipe-img"></td>
+                            <td><input type="text" formControlName="strMeal"></td>
+                            <td><input type="text" formControlName="strCategory"></td>
+                            <td><input type="text" formControlName="strArea"></td>
+                            <td class="actions-cell">
+                                <button (click)="saveEdit()" class="action-btn save" [disabled]="!recipeForm.valid">
+                                    <i class="fas fa-save"></i> Guardar
+                                </button>
+                                <button (click)="cancelEditing()" class="action-btn cancel">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Modo visualización normal -->
+                        <tr *ngFor="let recipe of paginatedRecipes; let i = index">
+                            <td *ngIf="editingIndex !== i"><img [src]="recipe.strMealThumb" alt="{{ recipe.strMeal }}"
+                                    class="recipe-img"></td>
+                            <td *ngIf="editingIndex !== i">{{ recipe.strMeal }}</td>
+                            <td *ngIf="editingIndex !== i">{{ recipe.strCategory }}</td>
+                            <td *ngIf="editingIndex !== i">{{ recipe.strArea }}</td>
+                            <td *ngIf="editingIndex !== i" class="actions-cell">
+                                <button (click)="confirmDelete(i)" class="action-btn delete">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </button>
+                                <button (click)="startEditing(i)" class="action-btn edit">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button (click)="viewRecipe(recipe)" class="action-btn view">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <div class="pagination" *ngIf="filteredRecipes.length > itemsPerPage">
+                    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+                        &laquo; Anterior
+                    </button>
+
+                    <span *ngFor="let page of getPageNumbers()" (click)="onPageChange(page)"
+                        [class.active]="page === currentPage">
+                        {{ page }}
+                    </span>
+
+                    <button (click)="onPageChange(currentPage + 1)"
+                        [disabled]="currentPage * itemsPerPage >= totalItems">
+                        Siguiente &raquo;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para ver receta -->
+    <div class="recipe-modal" *ngIf="selectedRecipe" @fadeInOut>
+        <div class="modal-content">
+            <span class="close-btn" (click)="selectedRecipe = null">&times;</span>
+            <h2>{{ selectedRecipe.strMeal }}</h2>
+            <img [src]="selectedRecipe.strMealThumb" alt="{{ selectedRecipe.strMeal }}" class="modal-image">
+
+            <div class="recipe-details">
+                <p><strong>Categoría:</strong> {{ selectedRecipe.strCategory }}</p>
+                <p><strong>Área:</strong> {{ selectedRecipe.strArea }}</p>
+
+                <div class="ingredients-section">
+                    <h3>Ingredientes:</h3>
+                    <div class="ingredients-grid">
+                        <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]">
+                            <div *ngIf="selectedRecipe['strIngredient'+i]" class="ingredient-item">
+                                <span class="ingredient-name">{{ selectedRecipe['strIngredient'+i] }}</span>
+                                <span class="ingredient-measure">{{ selectedRecipe['strMeasure'+i] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instructions-section">
+                    <h3>Instrucciones:</h3>
+                    <div class="instructions-text" [innerHTML]="selectedRecipe.strInstructions | formatInstructions">
+                    </div>
+                </div>
+
+                <div *ngIf="selectedRecipe.strYoutube" class="video-section">
+                    <h3>Video Tutorial:</h3>
+                    <a [href]="selectedRecipe.strYoutube" target="_blank" class="video-link">
+                        <i class="fab fa-youtube"></i> Ver en YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
