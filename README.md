@@ -1,59 +1,193 @@
-# RecetaApp
+#  RecetaApp - Angular Material 20
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.5.
+**Integrantes del equipo 5:**
+- Fatima Martinez Lopez
+- Alary Guzman Jimenez
 
-## Development server
+---
 
-To start a local development server, run:
+**RecetaApp** es una aplicación web construida con **Angular 20**, **Angular Material** y **RxJS**, enfocada en consultar recetas de cocina. Utiliza la API pública de [TheMealDB](https://www.themealdb.com/) para obtener los datos de las recetas, e implementa autenticación de usuarios simulada usando [MockAPI.io](https://mockapi.io/) y `localStorage` como respaldo.
 
-```bash
-ng serve
+---
+
+##  Tecnologías usadas
+
+- Angular 20 (`standalone components`)
+- Angular Material
+- RxJS
+- TheMealDB API
+- MockAPI.io (mock auth)
+- Angular Animations
+- LocalStorage
+- Jasmine + TestBed
+- FontAwesome y Google Fonts
+
+  ---
+
+###  Autenticación de usuarios
+
+La aplicación simula un sistema de autenticación completo con email y contraseña utilizando dos estrategias:
+
+- **Primero intenta autenticarse con la API de MockAPI.io**, una base REST remota.
+- Si no hay conexión o falla la autenticación, **cae en un sistema local (mock) usando `localStorage`**, lo cual asegura funcionalidad sin conexión.
+
+
+---
+
+##  Funcionalidades
+
+###  Autenticación
+- Login y registro con email y contraseña
+- Persistencia de sesión en `localStorage`
+- Fallback a usuarios locales si la API falla
+- Soporte para múltiples usuarios con MockAPI
+
+###  Visualización de recetas
+- Consulta todas las recetas disponibles
+- Búsqueda dinámica por nombre
+- Vista detallada de recetas
+- Formateo de instrucciones con Pipe personalizado
+
+###  Interfaz y diseño
+- Animaciones `fadeInOut`
+- Angular Material para diseño responsivo
+- Fuentes personalizadas con Montserrat
+- Fondo personalizado e íconos de FontAwesome
+
+---
+
+##  Navegación y rutas
+
+La aplicación utiliza el sistema de enrutamiento con `standalone components`. Las rutas están definidas en `app.routes.ts`:
+
+```ts
+export const routes: Routes = [
+  { path: '', redirectTo: 'auth', pathMatch: 'full' },
+  { path: 'auth', component: Auth },
+  { path: 'home', component: Home },
+  { path: '**', redirectTo: 'auth' }
+];
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
+## Servicios utilizados
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Servicio que maneja toda la autenticación:
 
-```bash
-ng generate component component-name
+
+```ts
+login(email, password)
+register(userData)
+logout()
+getCurrentUser()
+isAuthenticated()
+initializeMockUsers()
+
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
+### RecipesService
+
+Servicio que conecta con la API pública de recetas:
+
+```ts
+getRecipes()                 // Obtiene todas las recetas
+searchRecipes(term: string) // Busca por nombre
+
 ```
 
-## Building
+---
 
-To build the project run:
 
-```bash
-ng build
+### Rutas de Navegación
+
+La aplicación define rutas con Angular Router:
+
+```ts
+export const routes: Routes = [
+  { path: '', redirectTo: 'auth', pathMatch: 'full' },
+  { path: 'auth', component: Auth },
+  { path: 'home', component: Home },
+  { path: '**', redirectTo: 'auth' }
+];
+
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+### Animaciones
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Archivo animations.ts:
 
-```bash
-ng test
+```ts
+export const fadeInOut = trigger('fadeInOut', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('300ms ease-out', style({ opacity: 1 }))
+  ]),
+  transition(':leave', [
+    animate('300ms ease-in', style({ opacity: 0 }))
+  ])
+]);
+
+
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+### Estilos
 
-```bash
-ng e2e
+Archivo global styles.css:
+
+```css
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: url('assets/img/img2.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #333;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: rgba(43, 146, 255, 0.2);
+  border-radius: 20px;
+  color: #2b92ff;
+  font-weight: 500;
+}
+
+
+
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Capturas de Pantalla
+
+Capturas de Pantalla
+A continuación se muestran las principales vistas de la aplicación:
+
+Pantalla de Inicio de Sesión
+
+![inicio](capturas/inicio.png)
+
+Pantalla Principal (Home)
+
+
+![principal](capturas/principal.png)
+
+Vista Detallada de Receta
+
+Resultado con Término de Búsqueda
+
+![receta](capturas/receta.png)
+
+
+
+## Demostración en Línea - GitHub Pages
+
+Puedes probar el funcionamiento de la librería directamente aquí:
+
+[Ver demostración en línea](https://fatimamartinezlpz.github.io/usuario_recetas_api/)
