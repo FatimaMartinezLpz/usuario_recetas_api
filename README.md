@@ -169,36 +169,47 @@ body {
 Capturas de Pantalla
 A continuación se muestran las principales vistas de la aplicación:
 
-Pantalla de Inicio de Sesión
+## Pantalla de Inicio de Sesión
 
 ![inicio](capturas/inicio.png)
 
-Pantalla Principal (Home)
+## Pantalla Principal (Home)
 
 
 ![principal](capturas/principal.png)
 
-Vista Detallada de Receta
+## Vista Detallada de Receta
 
 Resultado con Término de Búsqueda
 
 ![receta](capturas/receta.png)
 
-Eliminacion de una receta
+## Eliminacion de una receta
 
 ![recetaelim](capturas/eliminar.png)
 
 ![recetaelimc](capturas/eliminar_hecho.png)
 
-Edicion de una receta
+## Edicion de una receta
 
 ![recetaedi](capturas/edicion.png)
 
 ![recetaedic](capturas/edicion_correcta.png)
 
-Paginacion
+## Paginacion
 
 ![paginapag](capturas/siguiente.png)
+
+## Formulario para creacion de nueva receta
+
+![paginapag](capturas/formulario.png)
+
+![paginapag](capturas/formulario1.png)
+
+![paginapag](capturas/formulario2.png)
+
+![paginapag](capturas/formulario3.png)
+
 
 ## Demostración en Línea - GitHub Pages
 
