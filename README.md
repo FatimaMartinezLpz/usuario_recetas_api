@@ -190,6 +190,8 @@ Resultado con Término de Búsqueda
 
 ## Eliminacion de una receta
 
+se elimino el sushi
+
 ![recetaelim](capturas/eliminar.png)
 
 ![recetaelimc](capturas/eliminar_hecho.png)
