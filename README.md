@@ -173,6 +173,10 @@ A continuación se muestran las principales vistas de la aplicación:
 
 ![inicio](capturas/inicio.png)
 
+## Perfil de usuario
+
+![inicio](capturas/perfil_usuario.png)
+
 ## Pantalla Principal (Home)
 
 
