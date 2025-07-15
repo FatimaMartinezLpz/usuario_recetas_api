@@ -1,4 +1,4 @@
-#  RecetaApp - Angular Material 20
+#  RecetaApp - Angular Material - Api
 
 **Integrantes del equipo 5:**
 - Fatima Martinez Lopez
