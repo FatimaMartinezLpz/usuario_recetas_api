@@ -184,17 +184,17 @@ Resultado con Término de Búsqueda
 
 ![receta](capturas/receta.png)
 
-Edicion de una receta
-
-![recetaedi](capturas/edicion.png)
-
-![recetaedic](capturas/edicion_correcta.png)
-
 Eliminacion de una receta
 
 ![recetaelim](capturas/eliminar.png)
 
 ![recetaelimc](capturas/eliminar_hecho.png)
+
+Edicion de una receta
+
+![recetaedi](capturas/edicion.png)
+
+![recetaedic](capturas/edicion_correcta.png)
 
 Paginacion
 
